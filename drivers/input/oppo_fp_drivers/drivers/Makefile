@@ -1,2 +1,0 @@
-obj-$(CONFIG_SILEAD_FP_PLATFORM)		+= silead/
-obj-$(CONFIG_FINGERPRINT_FPC_1020) += fpc1020/

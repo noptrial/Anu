@@ -306,12 +306,6 @@ EXPORT_SYMBOL(sysctl_tcp_delack_seg);
 int sysctl_tcp_use_userconfig __read_mostly;
 EXPORT_SYMBOL(sysctl_tcp_use_userconfig);
 
-#ifdef VENDOR_EDIT
-//add for: [monitor tcp info]
-int sysctl_tcp_info_print __read_mostly = -1;
-EXPORT_SYMBOL(sysctl_tcp_info_print);
-#endif /* VENDOR_EDIT */
-
 /*
  * Current number of TCP sockets.
  */
@@ -3423,8 +3417,8 @@ void __init tcp_init(void)
 	tcp_init_mem();
 	/* Set per-socket limits to no more than 1/128 the pressure threshold */
 	limit = nr_free_buffer_pages() << (PAGE_SHIFT - 7);
-	max_wshare = min(16UL*1024*1024, limit);
-	max_rshare = min(16UL*1024*1024, limit);
+	max_wshare = min(4UL*1024*1024, limit);
+	max_rshare = min(6UL*1024*1024, limit);
 
 	sysctl_tcp_wmem[0] = SK_MEM_QUANTUM;
 	sysctl_tcp_wmem[1] = 16*1024;

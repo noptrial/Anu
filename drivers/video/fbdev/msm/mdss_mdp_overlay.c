@@ -5959,11 +5959,6 @@ static int mdss_mdp_overlay_on(struct msm_fb_data_type *mfd)
 			goto end;
 	}
 
-	#ifdef VENDOR_EDIT
-	mdata = mfd_to_mdata(mfd);
-	mdata->scm_set_allowable = true;
-	#endif
-
 panel_on:
 	if (IS_ERR_VALUE((unsigned long)rc)) {
 		pr_err("Failed to turn on fb%d\n", mfd->index);
@@ -6025,9 +6020,6 @@ static int mdss_mdp_overlay_off(struct msm_fb_data_type *mfd)
 	int need_cleanup;
 	int retire_cnt;
 	bool destroy_ctl = false;
-	#ifdef VENDOR_EDIT
-	//struct mdss_data_type *mdata = mfd_to_mdata(mfd);
-	#endif
 
 	if (!mfd)
 		return -ENODEV;
@@ -6181,10 +6173,6 @@ ctl_stop:
 		mdss_mdp_wfd_deinit(mdp5_data->wfd);
 		mdp5_data->wfd = NULL;
 	}
-	#ifdef VENDOR_EDIT
-	//mdata = mfd_to_mdata(mfd);
-	mdata->scm_set_allowable = false;
-	#endif
 
 end:
 	/* Release the last reference to the runtime device */
@@ -6448,7 +6436,7 @@ static int __vsync_retire_setup(struct msm_fb_data_type *mfd)
 {
 	struct mdss_overlay_private *mdp5_data = mfd_to_mdp5_data(mfd);
 	char name[24];
-	struct sched_param param = { .sched_priority = 9 };
+	struct sched_param param = { .sched_priority = 5 };
 
 	snprintf(name, sizeof(name), "mdss_fb%d_retire", mfd->index);
 	mfd->mdp_sync_pt_data.timeline_retire = mdss_create_timeline(name);

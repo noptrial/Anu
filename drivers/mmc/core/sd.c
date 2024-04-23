@@ -1230,10 +1230,6 @@ static void mmc_sd_detect(struct mmc_host *host)
 		       __func__, mmc_hostname(host), err);
 		err = _mmc_detect_card_removed(host);
 	}
-#if defined(MOUNT_EXSTORAGE_IF)
-	if (retries)
-		err = _mmc_detect_card_removed(host);
-#endif//MOUNT_EXSTORAGE_IF
 #else
 	err = _mmc_detect_card_removed(host);
 #endif
@@ -1326,7 +1322,6 @@ static int _mmc_sd_resume(struct mmc_host *host)
 	if (host->ops->get_cd && !host->ops->get_cd(host)) {
 		err = -ENOMEDIUM;
 		mmc_card_clr_suspended(host->card);
-		err = -ENOMEDIUM;
 		goto out;
 	}
 
@@ -1388,7 +1383,6 @@ static int mmc_sd_resume(struct mmc_host *host)
 	MMC_TRACE(host, "%s: Enter\n", __func__);
 	err = _mmc_sd_resume(host);
 	if (err) {
-
 		pr_err("%s: sd resume err: %d\n", mmc_hostname(host), err);
 		if (host->ops->get_cd && !host->ops->get_cd(host)) {
 			err = -ENOMEDIUM;
@@ -1476,12 +1470,6 @@ int mmc_attach_sd(struct mmc_host *host)
 	BUG_ON(!host);
 	WARN_ON(!host->claimed);
 
-#ifdef VENDOR_EDIT
-	if (!host->detect_change_retry) {
-        pr_err("%s have init error 5 times\n", __func__);
-        return -ETIMEDOUT;
-    }
-#endif /* VENDOR_EDIT */
 	err = mmc_send_app_op_cond(host, 0, &ocr);
 	if (err)
 		return err;
@@ -1515,15 +1503,7 @@ int mmc_attach_sd(struct mmc_host *host)
 	 * Detect and init the card.
 	 */
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
-#ifndef VENDOR_EDIT
-    retries = 5;
-#else /* VENDOR_EDIT */
-    if (host->detect_change_retry < 5) 
-        retries = 1;
-    else
-        retries = 5;
-#endif /* VENDOR_EDIT */
-
+	retries = 5;
 	while (retries) {
 		err = mmc_sd_init_card(host, rocr, NULL);
 		if (err) {
@@ -1560,9 +1540,7 @@ int mmc_attach_sd(struct mmc_host *host)
 		mmc_release_host(host);
 		goto remove_card;
 	}
-#ifdef VENDOR_EDIT
-	host->detect_change_retry = 5;
-#endif /* VENDOR_EDIT */
+
 	return 0;
 
 remove_card:
@@ -1571,12 +1549,6 @@ remove_card:
 	mmc_claim_host(host);
 err:
 	mmc_detach_bus(host);
-
-#ifdef VENDOR_EDIT
-        if (err)
-    host->detect_change_retry--;
-    pr_err("detect_change_retry = %d !!!,err = %d\n", host->detect_change_retry,err);
-#endif /* VENDOR_EDIT */
 
 	pr_err("%s: error %d whilst initialising SD card\n",
 		mmc_hostname(host), err);

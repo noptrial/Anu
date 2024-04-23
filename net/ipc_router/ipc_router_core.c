@@ -239,11 +239,7 @@ static int is_sensor_port(struct msm_ipc_router_remote_port *rport)
 
 	if (rport && rport->server) {
 		svcid = rport->server->name.service;
-		if ((svcid == 400 || (svcid >= 256 && svcid <= 320))
-#ifdef VENDOR_EDIT
-			&& ((svcid != 277) && (svcid != 289) && (svcid != 296) && (svcid != 260))
-#endif /*VENDOR_EDIT*/
-           )
+		if (svcid == 400 || (svcid >= 256 && svcid <= 320))
 			return true;
 	}
 
@@ -2801,8 +2797,8 @@ static void do_read_data(struct kthread_work *work)
 
 		port_ptr = ipc_router_get_port_ref(hdr->dst_port_id);
 		if (!port_ptr) {
-//			IPC_RTR_ERR("%s: No local port id %08x\n", __func__,
-//				    hdr->dst_port_id);
+			IPC_RTR_ERR("%s: No local port id %08x\n", __func__,
+				    hdr->dst_port_id);
 			goto read_next_pkt1;
 		}
 

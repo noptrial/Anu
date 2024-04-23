@@ -1245,7 +1245,7 @@ static int fg_awake_cb(struct votable *votable, void *data, int awake,
 	struct fg_chip *chip = data;
 
 	if (awake)
-		pm_wakeup_event(chip->dev, 500);
+		pm_stay_awake(chip->dev);
 	else
 		pm_relax(chip->dev);
 
@@ -4117,6 +4117,7 @@ static int fg_psy_get_property(struct power_supply *psy,
 		rc = fg_get_prop_real_capacity(chip, &pval->intval);
 		break;
 	default:
+		pr_err("unsupported property %d\n", psp);
 		rc = -EINVAL;
 		break;
 	}

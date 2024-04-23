@@ -261,6 +261,7 @@ extern void init_wait_entry(wait_queue_t *__wait, int flags);
  * on purpose; we use long where we can return timeout values and int
  * otherwise.
  */
+
 #define ___wait_event(wq, condition, state, exclusive, ret, cmd)	\
 ({									\
 	__label__ __out;						\
@@ -278,9 +279,7 @@ extern void init_wait_entry(wait_queue_t *__wait, int flags);
 			__ret = __int;					\
 			goto __out;					\
 		}							\
-		if(hung_long_and_fatal_signal_pending(current)) { 	\
-			break;						\
-		}							\
+									\
 		cmd;							\
 	}								\
 	finish_wait(&wq, &__wait);					\

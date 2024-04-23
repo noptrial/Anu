@@ -846,14 +846,8 @@ struct dwc3_scratchpad_array {
 #define DWC3_GSI_EVT_BUF_ALLOC			10
 #define DWC3_GSI_EVT_BUF_SETUP			11
 #define DWC3_GSI_EVT_BUF_CLEANUP		12
-#ifdef ODM_WT_EDIT
-/*Hanxing.Duan@ODM.RH.BSP.USB.Basic  Disable device events after maximum error retries     2019.7.23 */
-#define DWC3_GSI_EVT_BUF_CLEAR			13
-#define DWC3_GSI_EVT_BUF_FREE			14
-#define DWC3_CONTROLLER_NOTIFY_CLEAR_DB		15
-#else /*ODM_WT_EDIT*/
 #define DWC3_GSI_EVT_BUF_FREE			13
-#endif /*ODM_WT_EDIT*/
+
 #define MAX_INTR_STATS				10
 
 /**

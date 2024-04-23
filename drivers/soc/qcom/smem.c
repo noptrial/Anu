@@ -308,6 +308,7 @@ static int qcom_smem_alloc_private(struct qcom_smem *smem,
 
 	phdr = ptable_entry_to_phdr(entry);
 	p_end = (void *)phdr + le32_to_cpu(entry->size);
+
 	hdr = phdr_to_first_private_entry(phdr);
 	end = phdr_to_last_private_entry(phdr);
 	cached = phdr_to_first_cached_entry(phdr);

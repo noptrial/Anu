@@ -130,7 +130,6 @@ config ARM64
 	select SYSCTL_EXCEPTION_TRACE
 	select THREAD_INFO_IN_TASK
 	select ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT
-	select ARCH_MSM8953_SOC_SETTINGS
 	help
 	  ARM 64-bit (AArch64) Linux support.
 
@@ -240,18 +239,6 @@ config NEED_DMA_MAP_STATE
 config NEED_SG_DMA_LENGTH
 	def_bool y
 
-config OPPO_ROOT_CHECK
-	def_bool y
-
-config OPPO_KEVENT_UPLOAD
-	def_bool y
-
-config OPPO_EXECVE_BLOCK
-	def_bool y
-
-config OPPO_EXECVE_REPORT
-	def_bool y
-
 config SMP
 	def_bool y
 
@@ -279,8 +266,6 @@ config PGTABLE_LEVELS
 source "init/Kconfig"
 
 source "kernel/Kconfig.freezer"
-
-source "arch/arm64/hotplug/Kconfig"
 
 source "arch/arm64/Kconfig.platforms"
 
@@ -649,29 +634,6 @@ config HOTPLUG_CPU
 	help
 	  Say Y here to experiment with turning CPUs off and on.  CPUs
 	  can be controlled through /sys/devices/system/cpu.
-
-config ARCH_ENABLE_MEMORY_HOTPLUG
-    depends on !NUMA
-	def_bool y
-
-config ARCH_ENABLE_MEMORY_HOTREMOVE
-	def_bool y
-	
-config ASMP
-	bool "Multi-core automatic hotplug support"
-	depends on SMP && HOTPLUG_CPU
-	default n
-	help
-	  Automatically hotplugs the multiple cpu cores on and off
-	  based on cpu load and suspend state
-
-config AIO_HOTPLUG
-	bool "All in One HotPlug"
-	depends on SMP && HOTPLUG_CPU
-	default n
-	help
-	  an All in One HotPlug for Traditional Quad-Core SoCs and 
-	  Hexa/Octa-Core big.LITTLE SoCs.
 
 # The GPIO number here must be sorted by descending number. In case of
 # a multiplatform kernel, we just want the highest value required by the
@@ -1302,15 +1264,6 @@ config ARCH_HIBERNATION_HEADER
 
 config ARCH_SUSPEND_POSSIBLE
 	def_bool y
-	
-config ARCH_MSM8953_SOC_SETTINGS
-	bool "Enable MSM8953 SOC settings"
-	depends on ARCH_MSM8953
-	help
-	  Enable generic MSM8953 related settings which are required for
-	  some of CPUSS sub-system functionality.
-
-	  If you are not sure what to do, select 'N' here.
 
 endmenu
 

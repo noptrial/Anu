@@ -1,6 +1,0 @@
-# ifdef VENDOR_EDIT
-config PHOENIX_BASE
-bool "config phoenix base"
-help
-    Provide base functions for phoenix.
-#endif /* VENDOR_EDIT */

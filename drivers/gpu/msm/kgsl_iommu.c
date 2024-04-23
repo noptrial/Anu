@@ -1253,7 +1253,7 @@ static int _init_global_pt(struct kgsl_mmu *mmu, struct kgsl_pagetable *pt)
 		if (ret) {
 			pr_err("SMMU aperture programming call failed with error %d\n",
 									ret);
-			goto done;
+			return ret;
 		}
 	}
 
@@ -2261,7 +2261,6 @@ static int _insert_gpuaddr(struct kgsl_pagetable *pagetable,
 		else {
 			/* Duplicate entry */
 			WARN(1, "duplicate gpuaddr: 0x%llx\n", gpuaddr);
-			kmem_cache_free(addr_entry_cache, new);
 			return -EEXIST;
 		}
 	}

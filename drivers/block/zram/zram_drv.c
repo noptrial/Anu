@@ -39,15 +39,7 @@ static DEFINE_IDR(zram_index_idr);
 static DEFINE_MUTEX(zram_index_mutex);
 
 static int zram_major;
-#ifdef VENDOR_EDIT
-#ifdef CONFIG_CRYPTO_LZ4
-static const char *default_compressor = "lz4";
-#else /*CONFIG_ZRAM_LZ4_COMPRESS*/
 static const char *default_compressor = "lzo";
-#endif /*CONFIG_ZRAM_LZ4_COMPRESS*/
-#else /*VENDOR_EDIT*/
-static const char *default_compressor = "lzo";
-#endif/*VENDOR_EDIT*/
 
 /*
  * We don't need to see memory allocation errors more than once every 1
@@ -365,7 +357,7 @@ static ssize_t comp_algorithm_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t len)
 {
 	struct zram *zram = dev_to_zram(dev);
-	char compressor[ARRAY_SIZE(zram->compressor)];
+	char compressor[CRYPTO_MAX_ALG_NAME];
 	size_t sz;
 
 	strlcpy(compressor, buf, sizeof(compressor));
@@ -384,7 +376,7 @@ static ssize_t comp_algorithm_store(struct device *dev,
 		return -EBUSY;
 	}
 
-	strcpy(zram->compressor, compressor);
+	strlcpy(zram->compressor, compressor, sizeof(compressor));
 	up_write(&zram->init_lock);
 	return len;
 }
@@ -1091,14 +1083,9 @@ static ssize_t disksize_store(struct device *dev,
 	struct zram *zram = dev_to_zram(dev);
 	int err;
 
-#ifndef CONFIG_ZRAM_SIZE_OVERRIDE
 	disksize = memparse(buf, NULL);
 	if (!disksize)
 		return -EINVAL;
-#else
-	disksize = (u64)SZ_1G * CONFIG_ZRAM_SIZE_OVERRIDE;
-	pr_info("Overriding zram size to %li", disksize);
-#endif
 
 	disksize = PAGE_ALIGN(disksize);
 	meta = zram_meta_alloc(zram->disk->disk_name, disksize);
@@ -1338,6 +1325,7 @@ static int zram_add(void)
 	}
 	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
 	zram->meta = NULL;
+
 	pr_info("Added device: %s\n", zram->disk->disk_name);
 	return device_id;
 
