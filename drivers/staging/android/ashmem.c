@@ -422,7 +422,8 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
 		}
 		vmfile->f_mode |= FMODE_LSEEK;
 		asma->file = vmfile;
-        	/*
+
+		/*
 		 * override mmap operation of the vmfile so that it can't be
 		 * remapped which would lead to creation of a new vma with no
 		 * asma permission checks. Have to override get_unmapped_area
